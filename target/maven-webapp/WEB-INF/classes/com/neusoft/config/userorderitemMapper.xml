@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  mapper
+     PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper  namespace="com.neusoft.config.userorderitem">
+    
+  <!--批量插入  -->
+     <insert  id="addUserOrderItem"  parameterType="list" keyColumn="id"  keyProperty="id" useGeneratedKeys="true">
+     
+       insert into userorderitem (order_no,user_id,product_id,product_name,product_image,current_unit_price,quantity,total_price,create_time,update_time)
+      values
+      
+     <foreach  collection="list"  item="orderitem" separator="," >
+     	
+    	(#{orderitem.order_no} , #{orderitem.user_id},  #{orderitem.product_id} , #{orderitem.product_name},  #{orderitem.product_image}  ,
+     	#{orderitem.current_unit_price},  #{orderitem.quantity}, #{orderitem.total_price}, now(),  now())
+     	
+     </foreach>
+      
+      
+     
+     
+     
+     
+     
+     </insert>
+  
+  
+  
+    <select id="findUserOrderItemsByOrderNo"  parameterType="long"  resultType="orderitem">
+    
+     select uoi.order_no order_no,u.username username,uoi.product_id product_id,uoi.product_name product_name,uoi.product_image product_image,uoi.current_unit_price current_unit_price,uoi.quantity quantity,uoi.total_price total_price,uoi.create_time create_time,uoi.update_time update_time 
+     from  userorderitem   uoi
+     join  user  u
+     on  uoi.user_id=u.id
+    
+    where order_no=#{order_no}
+    </select>
+  
+  
+    
+    
+    </mapper>
+    

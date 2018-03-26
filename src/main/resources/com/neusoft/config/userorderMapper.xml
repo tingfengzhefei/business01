@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  mapper
+     PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper  namespace="com.neusoft.config.userorder">
+    
+  
+     <insert  id="addOrder"  parameterType="userorder" keyColumn="id"  keyProperty="id" useGeneratedKeys="true">
+     
+       insert into  userorder (order_no,user_id,shipping_id,payment,payment_type,postage,status,create_time,update_time)
+      values(#{order_no},#{user_id},#{shipping_id},#{payment},#{payment_type},#{postage},#{status},now(),now())
+     
+     
+     </insert>
+  
+  
+  <!--分页查询订单  -->
+  
+  <select  id="findTotalCount"  parameterType="int"  resultType="int">
+  
+  select  count(*)  from userorder where  user_id=#{user_id}  
+  </select>
+    
+    
+   <resultMap type="userorder" id="oorder" autoMapping="true" >
+
+  <id column="id"  property="id" />
+<!-- 映射user对象  -->
+
+   <association property="user"  column="id" javaType="com.neusoft.entity.User" autoMapping="true">
+     <id column="user_id" property="id"/>
+   
+   
+   </association>
+   
+   
+    <association property="address"  column="id" javaType="com.neusoft.entity.Address" autoMapping="true">
+     <id column="shipping_id" property="id"/>
+    
+   
+   </association>
+
+
+</resultMap>
+
+
+    <select id="findUserOrder"  parameterType="map"  resultMap="oorder">  
+   select uo.id id,uo.order_no order_no,u.username username,a.receiver_address receiver_address,uo.payment payment,uo.payment_type payment_type, uo.postage postage,uo.status status,
+   			uo.create_time create_time,uo.update_time  update_time,
+   			uo.user_id user_id,uo.shipping_id shipping_id
+   from userorder  uo
+   
+   join user  u     
+   on  uo.user_id=u.id
+   
+   join address a  
+   on uo.shipping_id=a.id
+   
+   where uo.user_id=#{user_id}
+   limit #{offset} ,#{pageSize}
+    </select>
+    
+    
+    
+    <resultMap type="userorder"  id="user_order" autoMapping="true">
+    
+    <id  property="id" column="id" />
+    
+     <association property="user"  column="id" javaType="com.neusoft.entity.User" autoMapping="true">
+     <id column="user_id" property="id"/>
+   
+   
+   </association>
+    
+    
+    <collection property="orderItems"  javaType="list"  ofType="orderitem" column="order_no" autoMapping="true">
+    
+    <id  column="orderitem_id" property="orderitem_id"/>
+    
+    </collection>
+    
+    </resultMap>
+    
+    <select id="findUserOrderItemByOrderNo"  parameterType="long"  resultMap="user_order">
+    
+   select uo.id id,uo.order_no order_no,u.username username,uo.user_id user_id,uo.payment payment,uo.payment_type payment_type, uo.create_time create_time,uo.update_time  update_time,
+   uoi.product_name product_name,uoi.product_image product_image,uoi.current_unit_price current_unit_price,uoi.quantity quantity,uoi.total_price total_price,uoi.orderitem_id orderitem_id
+   from userorder uo
+ 
+   join  userorderitem  uoi
+   on  uo.order_no=uoi.order_no
+   
+   join user  u     
+   on  uo.user_id=u.id
+   where uo.order_no=#{order_no}
+    </select>
+    
+    
+    
+    <update id="updateOrderStatusByOrderNo"  parameterType="java.util.Map"   >
+    
+    update userorder set status=#{status}  where order_no=#{order_no}
+    
+    </update>
+    
+    
+    </mapper>
+    

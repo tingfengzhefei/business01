@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  mapper
+     PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper  namespace="com.neusoft.config">
+    
+   <insert id="addProductIntoCartByUserIdAndProductId"  parameterType="java.util.Map">
+    
+    insert into cart(user_id,product_id,quantity,checked,create_time,update_time) 
+    values(#{user_id},#{product_id},#{quantity},1,now(),now())
+    
+    </insert> 
+    
+   <select id="findtotalcount"  resultType="int">
+    
+    select  count(id) from cart
+    
+    </select> 
+
+
+<resultMap type="com.neusoft.entity.Cart" id="cart_user" autoMapping="true" >
+
+<id column="id"  property="id" />
+<!-- 映射user对象  -->
+   <association property="user"  column="id" javaType="com.neusoft.entity.User" autoMapping="true">
+     <id column="id" property="id"/>
+   
+   
+   </association>
+
+</resultMap>
+
+    <select id="findCartByPage" parameterType="java.util.Map" resultMap="cart_user">
+    
+select  c.id id,c.user_id user_id,u.username username,u.password password,c.product_id product_id,c.quantity quantity,c.checked checked,c.create_time create_time,c.update_time update_time 
+from cart c join user u   
+on c.user_id=u.id
+where user_id=#{user_id}  limit #{offset},#{pageSize}
+    
+    </select> 
+  
+    <update id="updateCartByUserIdAndProductId" parameterType="java.util.Map">
+    
+    update cart set quantity=#{quantity} ,update_time=now() where  user_id=#{user_id} and product_id=#{product_id}
+    </update>
+    
+    
+    <delete id="deleteCartByProductid" parameterType="java.lang.Integer" >
+      delete  from  cart where   product_id=#{product_id}
+    </delete>
+
+    
+    <select id="findCartByUserIdAndProductId" parameterType="java.util.Map" resultType="com.neusoft.entity.Cart">
+    
+    select  id,user_id,product_id,quantity,checked,create_time,update_time from cart where user_id=#{user_id}  and  product_id=#{product_id}
+    
+    </select>
+
+
+<!--选中某个商品   取消选中某个商品    全选   取消全选  -->
+
+
+    <update id="checkOrUncheck"  parameterType="java.util.Map">
+    
+    update cart set checked=#{checked} where user_id=#{user_id}
+    
+    <if test="product_id!=-1">
+    and product_id=#{product_id}
+    
+    
+    </if>
+    
+    </update>
+  
+    
+    
+    <select id="selectCountByProductId" parameterType="java.lang.Integer" resultType="int">
+    
+   select sum(quantity) from cart where user_id=#{user_id} 
+    
+    </select>
+  
+  
+  <select id="findCartListByUserid"  parameterType="int"  resultType="com.neusoft.entity.Cart">
+  
+   select  id,user_id,product_id,quantity,checked,create_time,update_time from cart 
+   where user_id=#{user_id}  and  checked=1
+    
+  
+  </select>
+  
+    <!--删除购物车中  -->
+    
+    <delete id="deleteCheckedProductByUserId"  parameterType="int">
+    delete from cart where user_id=#{user_id} and checked=1
+    
+    </delete>
+    
+    
+    </mapper>
+    

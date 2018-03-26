@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  mapper
+     PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+    <mapper  namespace="com.neusoft.config">
+    
+    
+
+    
+    
+    <insert  id="addAddressDao" parameterType="java.util.Map" statementType="PREPARED" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    
+insert into address(user_id,receiver_name,receiver_phone,receiver_moblie,receiver_provinc,receiver_city,receiver_district,receiver_address,receiver_zip,create_time,update_time) 
+values(#{user_id},#{receiver_name},#{receiver_phone},#{receiver_moblie},#{receiver_provinc},#{receiver_city},#{receiver_district},#{receiver_address},#{receiver_zip},now(),now())
+    
+    
+    </insert> 
+   
+    <delete  id="deleteAddressByUserid"  parameterType="java.lang.Integer" >
+    
+    delete from address where id=#{id} 
+    
+    
+    </delete>
+    
+    
+     
+    <select id="findAll"  parameterType="java.lang.Integer"  resultType="com.neusoft.entity.Address" >
+    
+    select * from address where id=#{id}
+    
+    </select>
+    
+    
+    <update  id="updateUserAddByUserid" parameterType="java.util.Map" >
+    
+    update address
+    <set>
+    <if test="receiver_name!=null">
+    receiver_name=#{receiver_name},
+    </if>
+    <if test="receiver_phone!=null">
+    receiver_phone=#{receiver_phone},
+    </if>
+    <if test="receiver_moblie!=null">
+    receiver_moblie=#{receiver_moblie},
+    </if>
+    <if test="receiver_provinc!=null">
+    receiver_provinc=#{receiver_provinc},
+    </if>
+    <if test="receiver_city!=null">
+    receiver_city=#{receiver_city},
+    </if>
+    <if test="receiver_district!=null">
+    receiver_district=#{receiver_district},
+    </if>
+    <if test="receiver_address!=null">
+    receiver_address=#{receiver_address},
+    </if>
+    <if test="receiver_zip!=null">
+    receiver_zip=#{receiver_zip},
+    </if>
+    <if test="create_time!=null">
+    create_time=now(),
+    </if>
+     <if test="update_time!=null">
+    update_time=now() 
+      </if>
+      
+      </set>
+    where 
+    
+    
+    user_id=#{user_id} and id=#{id};
+    
+    </update>
+   
+    
+
+    
+    
+    <select id="findTotalCount" resultType="java.lang.Integer">
+    
+    select count(id) from address
+    
+    </select>
+    
+    <select id="findUserAddress" parameterType="java.util.Map" resultType="com.neusoft.entity.Address">
+    
+    select * from address where user_id=#{user_id} limit #{offset} ,#{pageSize}
+    
+    </select>
+    
+    
+    
+    </mapper>
+    

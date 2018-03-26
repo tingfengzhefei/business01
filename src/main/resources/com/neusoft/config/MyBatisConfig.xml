@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+
+<configuration>
+ 
+ 
+ 
+ 
+<properties resource="jdbc.properties" />
+
+
+<typeAliases>
+ <typeAlias  type="com.neusoft.entity.UserOrder"   alias="userorder"></typeAlias>
+   <typeAlias  type="com.neusoft.entity.UserOrderItem"   alias="orderitem"></typeAlias>
+
+</typeAliases>
+ 
+
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC">
+      </transactionManager>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${user}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+
+  <mappers>
+	    <mapper resource="com/neusoft/config/addressMapper.xml"/>
+	     <mapper resource="com/neusoft/config/cartMapper.xml"/>	  
+	      <mapper resource="com/neusoft/config/userorderMapper.xml"/>	 
+	      <mapper resource="com/neusoft/config/userorderitemMapper.xml"/>   
+  </mappers>
+
+</configuration>
+
+
+
